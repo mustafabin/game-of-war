@@ -2,7 +2,6 @@ class Table {
   constructor(deck = []) {
     this.deck = deck;
   }
-  deck = [];
   add(arr) {
     for (let i = 0; i < arr.length; i++) {
       this.deck.push(arr[i]);
@@ -27,7 +26,6 @@ class player {
   }
   clear() {
     this.cardsPlayed.splice(0, this.cardsPlayed.length);
-    console.log("clear", this.cardsPlayed);
   }
   eatTable(table) {
     //console.log(table, "hey");
@@ -37,7 +35,8 @@ class player {
   }
 }
 
-let createDeck = (deck) => {
+let createDeck = () => {
+  let deck = [];
   let ranks = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
   for (let i = 0; i < 4; i++) {
     for (let j = 0; j < ranks.length; j++) {
@@ -61,3 +60,35 @@ let shuffle = (deck) => {
   }
   return deck;
 };
+let clearHands = () => {
+  table.reset();
+  playerOne.clear();
+  playerTwo.clear();
+};
+
+let deck = createDeck();
+deck = shuffle(deck);
+const playerOne = new player(deck.slice(0, 26));
+const playerTwo = new player(deck.slice(26, 52));
+const table = new Table([]);
+console.log(playerOne.deck.length);
+console.log(playerTwo.deck.length);
+
+playerOne.playCard(4);
+playerTwo.playCard(4);
+table.add(playerOne.cardsPlayed);
+table.add(playerTwo.cardsPlayed);
+
+console.log(table.deck);
+playerTwo.eatTable(table.deck);
+clearHands();
+
+playerOne.playCard(21);
+playerTwo.playCard(21);
+table.add(playerOne.cardsPlayed);
+table.add(playerTwo.cardsPlayed);
+
+console.log(table.deck);
+playerTwo.eatTable(table.deck);
+console.log(playerOne.deck.length);
+console.log(playerTwo.deck.length);
