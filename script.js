@@ -65,7 +65,7 @@ let createDeck = () => {
   }
   return deck;
 };
-let clearHands = () => {
+let clearHands = (playerOne, playerTwo, table) => {
   table.reset();
   playerOne.clear();
   playerTwo.clear();
@@ -92,11 +92,11 @@ let playRound = (playerOne, playerTwo, table, cards) => {
         table.add(playerTwo.cardsPlayed);
         if (playerOne.lastPlayed > playerTwo.lastPlayed) {
           playerOne.eatTable(table.deck);
-          clearHands();
+          clearHands(playerOne, playerTwo, table);
           warOver = true;
         } else if (playerTwo.lastPlayed > playerOne.lastPlayed) {
           playerTwo.eatTable(table.deck);
-          clearHands();
+          clearHands(playerOne, playerTwo, table);
           warOver = true;
         }
       } else {
@@ -123,28 +123,54 @@ let playRound = (playerOne, playerTwo, table, cards) => {
   console.log("_____________TABLE _____________________");
   console.log(table.deck, "currently whats on the table");
   console.log("_____________TABLE _____________________");
-  clearHands();
+  clearHands(playerOne, playerTwo, table);
 };
+let runGame = (runtimes = 1) => {
+  for (let i = 0; i < runtimes; i++) {
+    let deck = createDeck();
+    deck = shuffle(deck);
+    const playerOne = new player(deck.slice(0, 26));
+    const playerTwo = new player(deck.slice(26, 52));
+    const table = new Table([]);
+    let gameOver = false;
+    do {
+      if (playerOne.deck.length === 0 || playerTwo.deck.length === 0) {
+        console.log(
+          "GAMEEEEEE!!! with this many rounds:  ",
+          roundCounter,
+          " this many war loops: ",
+          warCounter
+        );
+        gameOver = true;
+      } else {
+        playRound(playerOne, playerTwo, table, 1);
+        console.log("_____________NEW ROUND _____________________");
+      }
+    } while (!gameOver);
+
+    roundTotal += roundCounter;
+    roundCounter = 0;
+    warTotal += warCounter;
+    warCounter = 0;
+  }
+  console.log(
+    "game length avg: ",
+    roundTotal / runtimes,
+    "wars per game avg: ",
+    warTotal / runtimes,
+    "( in rounds )"
+  );
+};
+
 //end of definfitionns
+
+//global variables
+let roundTotal = 0;
+let warTotal = 0;
 let warCounter = 0;
 let roundCounter = 0;
-let deck = createDeck();
-deck = shuffle(deck);
-const playerOne = new player(deck.slice(0, 26));
-const playerTwo = new player(deck.slice(26, 52));
-const table = new Table([]);
-let gameOver = false;
-do {
-  if (playerOne.deck.length === 0 || playerTwo.deck.length === 0) {
-    console.log(
-      "GAMEEEEEE!!! with this many rounds:  ",
-      roundCounter,
-      " this many war loops: ",
-      warCounter
-    );
-    gameOver = true;
-  } else {
-    playRound(playerOne, playerTwo, table, 1);
-    console.log("_____________NEW ROUND _____________________");
-  }
-} while (!gameOver);
+
+//end of globals
+//run x amount of rounds
+runGame(1000);
+//the avg of game length in a 100 random games was 270.22 and war length was 17.07
