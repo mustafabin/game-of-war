@@ -28,9 +28,9 @@ class player {
     this.cardsPlayed.splice(0, this.cardsPlayed.length);
   }
   eatTable(table) {
-    //console.log(table, "hey");
+    //The unshift() method adds one or more items to the beginning of an array and returns the new length of the modified array.
     for (let i = 0; i < table.length; i++) {
-      this.deck.push(table[i]);
+      this.deck.unshift(table[i]);
     }
   }
 }
@@ -65,30 +65,49 @@ let clearHands = () => {
   playerOne.clear();
   playerTwo.clear();
 };
+let playRound = (playerOne, playerTwo, table, cards) => {
+  playerOne.playCard(cards);
+  playerTwo.playCard(cards);
+  table.add(playerOne.cardsPlayed);
+  table.add(playerTwo.cardsPlayed);
+  if (playerOne.lastPlayed == playerTwo.lastPlayed) {
+    console.log("tieeeee");
+    gameOver = true;
+  } else if (playerOne.lastPlayed < playerTwo.lastPlayed) {
+    //player two wins
+    console.log(
+      "player two wins with his last card being",
+      playerTwo.lastPlayed
+    );
+    playerTwo.eatTable(table.deck);
+  } else if (playerTwo.lastPlayed < playerOne.lastPlayed) {
+    //player one wins
+    console.log(
+      "player one wins with his last card being",
+      playerOne.lastPlayed
+    );
+    playerOne.eatTable(table.deck);
+  }
 
+  console.log("_____________TABLE ___________________");
+  console.log(table.deck);
+  console.log("_____________TABLE ___________________");
+  clearHands();
+};
 let deck = createDeck();
 deck = shuffle(deck);
 const playerOne = new player(deck.slice(0, 26));
 const playerTwo = new player(deck.slice(26, 52));
 const table = new Table([]);
-console.log(playerOne.deck.length);
-console.log(playerTwo.deck.length);
-
-playerOne.playCard(4);
-playerTwo.playCard(4);
-table.add(playerOne.cardsPlayed);
-table.add(playerTwo.cardsPlayed);
-
-console.log(table.deck);
-playerTwo.eatTable(table.deck);
-clearHands();
-
-playerOne.playCard(21);
-playerTwo.playCard(21);
-table.add(playerOne.cardsPlayed);
-table.add(playerTwo.cardsPlayed);
-
-console.log(table.deck);
-playerTwo.eatTable(table.deck);
-console.log(playerOne.deck.length);
-console.log(playerTwo.deck.length);
+let gameOver = false;
+do {
+  if (playerOne.deck.length === 0 || playerTwo.deck.length === 0) {
+    console.log("GAMEEEEEE!!!");
+    gameOver = true;
+  } else {
+    playRound(playerOne, playerTwo, table, 1);
+    console.log(playerOne.deck, playerOne.deck.length);
+    console.log(playerTwo.deck, playerTwo.deck.length);
+    console.log("_____________NEW ROUND ___________________");
+  }
+} while (!gameOver);
