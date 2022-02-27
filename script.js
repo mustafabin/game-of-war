@@ -26,7 +26,6 @@ class Table {
   }
 }
 
-
 class player {
   constructor(deck, cardsPlayed = [], lastPlayed = 0) {
     this.deck = deck;
@@ -140,6 +139,7 @@ do {
     console.log(
       "GAMEEEEEE!!! with this many rounds:  ",
       roundCounter,
+      " this many war loops: ",
       warCounter
     );
     gameOver = true;
