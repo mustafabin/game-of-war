@@ -1,3 +1,17 @@
+let shuffle = (deck) => {
+  let remainingCards = deck.length;
+  let randomIndex;
+  while (remainingCards != 0) {
+    randomIndex = Math.floor(Math.random() * remainingCards); //gets a random index based on how many cards are remaining
+    remainingCards--;
+    //swap current index with a random one
+    [deck[remainingCards], deck[randomIndex]] = [
+      deck[randomIndex],
+      deck[remainingCards],
+    ];
+  }
+  return deck;
+};
 class Table {
   constructor(deck = []) {
     this.deck = deck;
@@ -11,6 +25,7 @@ class Table {
     this.deck.splice(0, this.deck.length);
   }
 }
+
 
 class player {
   constructor(deck, cardsPlayed = [], lastPlayed = 0) {
@@ -32,7 +47,7 @@ class player {
   eatTable(table) {
     //i reverse the table b/c your first played card should be at the bottom of the deck
     //to better simulate the card game to have a person wins the table i reverse the array the push it
-    let clone = table.slice().reverse();
+    let clone = shuffle(table.slice());
 
     //The unshift() method adds one or more items to the beginning of an array and returns the new length of the modified array.
     for (let i = 0; i < clone.length; i++) {
@@ -48,21 +63,6 @@ let createDeck = () => {
     for (let j = 0; j < ranks.length; j++) {
       deck.push(ranks[j]);
     }
-  }
-  return deck;
-};
-
-let shuffle = (deck) => {
-  let remainingCards = deck.length;
-  let randomIndex;
-  while (remainingCards != 0) {
-    randomIndex = Math.floor(Math.random() * remainingCards); //gets a random index based on how many cards are remaining
-    remainingCards--;
-    //swap current index with a random one
-    [deck[remainingCards], deck[randomIndex]] = [
-      deck[randomIndex],
-      deck[remainingCards],
-    ];
   }
   return deck;
 };
