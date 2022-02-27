@@ -174,3 +174,4 @@ let roundCounter = 0;
 //run x amount of rounds
 runGame(1000);
 //the avg of game length in a 100 random games was 270.22 and war length was 17.07
+//and in a 1000 games game length:255.896  war lengths: 16.35
