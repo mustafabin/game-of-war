@@ -19,6 +19,7 @@ class player {
     this.cardsPlayed = cardsPlayed;
   }
   playCard(iterations) {
+    this.clear();
     for (let i = 0; i < iterations; i++) {
       this.cardsPlayed.push(this.deck.pop());
     }
@@ -27,6 +28,7 @@ class player {
   clear() {
     this.cardsPlayed.splice(0, this.cardsPlayed.length);
   }
+
   eatTable(table) {
     //i reverse the table b/c your first played card should be at the bottom of the deck
     //to better simulate the card game to have a person wins the table i reverse the array the push it
@@ -69,7 +71,10 @@ let clearHands = () => {
   playerOne.clear();
   playerTwo.clear();
 };
+
 let playRound = (playerOne, playerTwo, table, cards) => {
+  let warOver = false;
+  roundCounter++;
   console.log(playerOne.deck, playerOne.deck.length, "Player one");
   console.log(playerTwo.deck, playerTwo.deck.length, "Player two");
   playerOne.playCard(cards);
@@ -78,8 +83,28 @@ let playRound = (playerOne, playerTwo, table, cards) => {
   table.add(playerTwo.cardsPlayed);
   if (playerOne.lastPlayed == playerTwo.lastPlayed) {
     console.log("tieeeee");
-
-    gameOver = true;
+    //start war
+    while (!warOver) {
+      //war
+      if (playerOne.deck.length >= 4 && playerTwo.deck.length >= 4) {
+        playerOne.playCard(4);
+        playerTwo.playCard(4);
+        table.add(playerOne.cardsPlayed);
+        table.add(playerTwo.cardsPlayed);
+        if (playerOne.lastPlayed > playerTwo.lastPlayed) {
+          playerOne.eatTable(table.deck);
+          clearHands();
+          warOver = true;
+        } else if (playerTwo.lastPlayed > playerOne.lastPlayed) {
+          playerTwo.eatTable(table.deck);
+          clearHands();
+          warOver = true;
+        }
+      } else {
+        warOver = true;
+      }
+      warCounter++;
+    }
   } else if (playerOne.lastPlayed < playerTwo.lastPlayed) {
     //player two wins
     console.log(
@@ -102,6 +127,7 @@ let playRound = (playerOne, playerTwo, table, cards) => {
   clearHands();
 };
 //end of definfitionns
+let warCounter = 0;
 let roundCounter = 0;
 let deck = createDeck();
 deck = shuffle(deck);
@@ -111,11 +137,14 @@ const table = new Table([]);
 let gameOver = false;
 do {
   if (playerOne.deck.length === 0 || playerTwo.deck.length === 0) {
-    console.log("GAMEEEEEE!!! with this many rounds:  ", roundCounter);
+    console.log(
+      "GAMEEEEEE!!! with this many rounds:  ",
+      roundCounter,
+      warCounter
+    );
     gameOver = true;
   } else {
     playRound(playerOne, playerTwo, table, 1);
-
     console.log("_____________NEW ROUND _____________________");
   }
 } while (!gameOver);
